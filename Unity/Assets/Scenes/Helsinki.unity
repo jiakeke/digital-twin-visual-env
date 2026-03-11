@@ -137,7 +137,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &547714105
 AudioListener:
   m_ObjectHideFlags: 0
@@ -205,13 +205,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 547714104}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: -0.13710113, y: 0.012377563, z: -0.00062508066, w: -0.9904795}
+  m_LocalPosition: {x: 889, y: 54, z: -360}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 15.76, y: -1.45, z: -0.128}
 --- !u!114 &547714108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,7 +284,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1407990731}
   serializedVersion: 2
-  m_LocalRotation: {x: 1.3877788e-17, y: 1.4971442e-18, z: -9.549874e-18, w: 1}
+  m_LocalRotation: {x: 0, y: 6.52501e-19, z: -6.6973797e-17, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -331,13 +331,13 @@ MonoBehaviour:
   _detectTransformChanges: 1
   _localToGlobeFixedMatrix:
     c0:
-      x: -0.42164362549543416
+      x: -0.4216436254954342
       y: 0.9067616296905522
-      z: -0.000000000000000012039039921842108
+      z: -0.00000000000000011684293731099014
       w: 0
     c1:
-      x: 0.45105022699113506
-      y: 0.2097380907637035
+      x: 0.451050226991135
+      y: 0.20973809076370362
       z: 0.8675042512945063
       w: 0
     c2:
@@ -493,7 +493,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1466286718
 Transform:
   m_ObjectHideFlags: 0
@@ -502,7 +502,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1466286717}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.20783743, y: -0.26046902, z: 0.057460293, w: 0.941094}
+  m_LocalRotation: {x: 0.20783745, y: -0.26046905, z: 0.0574603, w: 0.9410939}
   m_LocalPosition: {x: 928.16406, y: 223.15625, z: -507.30664}
   m_LocalScale: {x: 1.0000001, y: 1.0000004, z: 1.0000001}
   m_ConstrainProportionsScale: 0
@@ -676,19 +676,19 @@ MonoBehaviour:
   _detectTransformChanges: 1
   _localToGlobeFixedMatrix:
     c0:
-      x: -0.7661309639605938
-      y: 0.5896525488799131
-      z: 0.2556432498943995
+      x: -0.7661310186449939
+      y: 0.5896524521326948
+      z: 0.2556432716129753
       w: 0
     c1:
-      x: 0.21618618887553975
-      y: -0.13814878613654888
-      z: 0.9665294458927622
+      x: 0.21618618484851937
+      y: -0.13814884809835806
+      z: 0.9665294314459192
       w: 0
     c2:
-      x: -0.6052331364864864
-      y: -0.7957543927798141
-      z: 0.021634669286243524
+      x: -0.6052330571808239
+      y: -0.7957544364822224
+      z: 0.021634587910345227
       w: 0
     c3:
       x: 2884242.7304258696
@@ -1001,7 +1001,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1910542624}
   serializedVersion: 2
-  m_LocalRotation: {x: 4.1633363e-17, y: -4.428119e-17, z: 0.000062399675, w: 1}
+  m_LocalRotation: {x: 5.551115e-17, y: -6.30345e-17, z: 0.000062399675, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1088,19 +1088,19 @@ MonoBehaviour:
   _detectTransformChanges: 1
   _localToGlobeFixedMatrix:
     c0:
-      x: -0.4215873314369547
+      x: -0.42158733143695476
       y: 0.9067877978065105
-      z: 0.0001082639663178123
+      z: 0.0001082639663178515
       w: 0
     c1:
-      x: 0.4511028443288245
+      x: 0.45110284432882447
       y: 0.20962492586877315
       z: 0.86750424453887
       w: 0
     c2:
       x: -0.7866195686672888
-      y: -0.36577763764851784
-      z: 0.49742976789287346
+      y: -0.3657776376485179
+      z: 0.4974297678928734
       w: 0
     c3:
       x: 2884134.372878189
@@ -1259,7 +1259,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: CesiumForUnity::CesiumForUnity.CesiumCameraManager
   _useMainCamera: 1
-  _useSceneViewCameraInEditor: 1
+  _useSceneViewCameraInEditor: 0
   _additionalCameras: []
 --- !u!114 &2093344159
 MonoBehaviour:
