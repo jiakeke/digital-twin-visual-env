@@ -191,6 +191,20 @@ Returns the status of all configured data sources.
 | `precipitation` | mm/h | FMI |
 | `aqi` | index | HSY |
 
+#### Air Quality Index (AQI) — Finnish Standard
+
+HSY reports a single composite index called **Ilmanlaatuindeksi**, calculated from PM2.5, PM10, NO₂, O₃ and other pollutants. Individual pollutant values are not exposed by the HSY endpoint.
+
+| Value | Level | Description |
+|-------|-------|-------------|
+| 0–50 | 🟢 Hyvä | Good |
+| 51–75 | 🟡 Tyydyttävä | Satisfactory |
+| 76–100 | 🟠 Välttävä | Fair |
+| 101–150 | 🔴 Huono | Poor |
+| 151–200 | 🟣 Erittäin huono | Very Poor |
+
+> Note: this scale is defined by the Finnish Meteorological Institute and differs from the US EPA AQI scale.
+
 ---
 
 ## Configuration
