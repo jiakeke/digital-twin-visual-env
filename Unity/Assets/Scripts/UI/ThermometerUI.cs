@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 [ExecuteAlways]
 public class ThermometerUI : MonoBehaviour
@@ -20,6 +21,9 @@ public class ThermometerUI : MonoBehaviour
     public TMP_Text temperatureValueText;
     public string temperatureUnit = "°„C";
     public int decimalPlaces = 1;
+
+    [Header("Optional Time Text")]
+    public TMP_Text timeText;
 
     void OnEnable()
     {
@@ -69,6 +73,26 @@ public class ThermometerUI : MonoBehaviour
         if (temperatureValueText != null)
         {
             temperatureValueText.text = temp.ToString($"F{decimalPlaces}") + temperatureUnit;
+        }
+    }
+
+    public void SetTime(string isoTime)
+    {
+        if (timeText == null) return;
+
+        // Only pick up HH:mm
+        if (DateTime.TryParse(isoTime, out DateTime dt))
+        {
+            dt = dt.ToLocalTime(); //Switch to UTC+2
+
+            string timeStr = dt.ToString("HH:mm");
+            string timezone = TimeZoneInfo.Local.IsDaylightSavingTime(dt) ? "EEST" : "EET";
+
+            timeText.text = $"Updated: {timeStr} ({timezone})";
+        }
+        else
+        {
+            timeText.text = "Updated: " + isoTime;
         }
     }
 }
