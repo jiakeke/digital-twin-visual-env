@@ -19,3 +19,11 @@ public class LatestDataReading
     public float value;
     public string unit;
 }
+
+[Serializable]
+public class HistoryDataResponse
+{
+    public string from;
+    public string to;
+    public LatestDataReading[] readings;
+}

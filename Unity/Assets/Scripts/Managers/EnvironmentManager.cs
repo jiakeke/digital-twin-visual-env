@@ -6,7 +6,9 @@ public class EnvironmentManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private EnvironmentApiClient apiClient;
     [SerializeField] private ThermometerUI thermometer;
+    [SerializeField] private HistoryPanelController historyController;
 
+    //press "play" run health api
     private void Start()
     {
         StartCoroutine(CheckApiOnStartup());
@@ -16,6 +18,7 @@ public class EnvironmentManager : MonoBehaviour
         yield return StartCoroutine(apiClient.CheckApiHealth());
 
     }
+    //press "Latest" run latest api
     public void OnTemperatureLatestButtonClicked()
     {
         StartCoroutine(LoadLatestTemperature());
@@ -25,7 +28,16 @@ public class EnvironmentManager : MonoBehaviour
     {
         yield return StartCoroutine(apiClient.GetLatestEnvironment(OnLatestEnvironmentReceived));
     }
+    //run "history" run history api
+    public void OnTemperatureHistoryButtonClicked()
+    {
+        StartCoroutine(LoadTemperatureHistory());
+    }
 
+    private IEnumerator LoadTemperatureHistory()
+    {
+        yield return StartCoroutine(apiClient.GetTemperatureHistory(OnHistoryReceived));
+    }
     private void OnLatestEnvironmentReceived(LatestDataResponse response)
     {
         if (response == null || response.readings == null || response.readings.Length == 0)
@@ -50,6 +62,20 @@ public class EnvironmentManager : MonoBehaviour
             }
 
             //Add another data here
+        }
+    }
+
+    private void OnHistoryReceived(HistoryDataResponse response)
+    {
+        if (response == null || response.readings == null || response.readings.Length == 0)
+        {
+            Debug.LogWarning("No history temperature data received.");
+            return;
+        }
+
+        if (historyController != null)
+        {
+            historyController.SetHistoryData(response.readings);
         }
     }
 }
