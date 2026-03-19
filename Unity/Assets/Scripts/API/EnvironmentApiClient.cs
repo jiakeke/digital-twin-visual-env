@@ -53,8 +53,10 @@ public class EnvironmentApiClient : MonoBehaviour
     //Obtain dynamic historical temperature
     public IEnumerator GetTemperatureHistory(System.Action<HistoryDataResponse> onSuccess)
     {
-        string from = "2026-03-17T00:00:00Z";
-        string to = "2026-03-20T23:59:59Z";
+        //string from = "2026-03-17T00:00:00Z";
+        //string to = "2026-03-20T23:59:59Z";
+        string from = System.DateTime.UtcNow.AddDays(-7).ToString("yyyy-MM-ddTHH:mm:ssZ");
+        string to = System.DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
         string url = $"{historyUrl}?source=fmi&metric=temperature&from={from}&to={to}";
 
