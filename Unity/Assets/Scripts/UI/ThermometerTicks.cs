@@ -14,10 +14,9 @@ public class ThermometerTicks : MonoBehaviour
     public TMP_Text labelPrefab;
     public float xOffset = -10f;
 
-    void Start()
-    {
-        Rebuild();
-    }
+    void OnEnable() => Rebuild();
+    void OnValidate() => Rebuild();
+
     public void Rebuild()
     {
         if (thermometer == null || tubeRect == null || labelPrefab == null) return;

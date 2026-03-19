@@ -9,20 +9,13 @@ public class EnvironmentManager : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(CheckApiOnStartup());
+        StartCoroutine(InitializeEnvironment());
     }
-    private IEnumerator CheckApiOnStartup()
+
+    private IEnumerator InitializeEnvironment()
     {
         yield return StartCoroutine(apiClient.CheckApiHealth());
 
-    }
-    public void OnTemperatureLatestButtonClicked()
-    {
-        StartCoroutine(LoadLatestTemperature());
-    }
-
-    private IEnumerator LoadLatestTemperature()
-    {
         yield return StartCoroutine(apiClient.GetLatestEnvironment(OnLatestEnvironmentReceived));
     }
 
@@ -43,13 +36,10 @@ public class EnvironmentManager : MonoBehaviour
                 if (thermometer != null)
                 {
                     thermometer.SetTemperature(reading.value);
-                    thermometer.SetTime(reading.measured_at);
                 }
 
                 break;
             }
-
-            //Add another data here
         }
     }
 }
