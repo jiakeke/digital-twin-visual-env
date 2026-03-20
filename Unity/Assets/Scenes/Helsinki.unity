@@ -486,8 +486,8 @@ MonoBehaviour:
   tubeRect: {fileID: 154349631}
   fillRect: {fileID: 1107373055}
   pointerRect: {fileID: 791291771}
-  minTemp: -20
-  maxTemp: 40
+  minTemp: -10
+  maxTemp: 20
   currentTemp: -26.5
   temperatureValueText: {fileID: 708783357}
   temperatureUnit: "\xB0C"
@@ -2130,8 +2130,8 @@ MonoBehaviour:
   tubeRect: {fileID: 1605703004}
   fillRect: {fileID: 1811396686}
   pointerRect: {fileID: 343790230}
-  minTemp: -20
-  maxTemp: 40
+  minTemp: -10
+  maxTemp: 20
   currentTemp: -32.1
   temperatureValueText: {fileID: 49424851}
   temperatureUnit: "\xB0C"
@@ -4120,8 +4120,8 @@ MonoBehaviour:
   thermometer: {fileID: 631676227}
   tubeRect: {fileID: 1605703004}
   step: 10
-  minLabel: -20
-  maxLabel: 40
+  minLabel: -10
+  maxLabel: 20
   labelPrefab: {fileID: 1987822199873445785, guid: 6856666aa57f59349beb2d3cf4f9b43f, type: 3}
   xOffset: -10
 --- !u!1 &1416335435
@@ -4964,8 +4964,8 @@ MonoBehaviour:
   thermometer: {fileID: 118401003}
   tubeRect: {fileID: 154349631}
   step: 10
-  minLabel: -20
-  maxLabel: 40
+  minLabel: -10
+  maxLabel: 20
   labelPrefab: {fileID: 1987822199873445785, guid: 6856666aa57f59349beb2d3cf4f9b43f, type: 3}
   xOffset: -10
 --- !u!224 &1602611792 stripped

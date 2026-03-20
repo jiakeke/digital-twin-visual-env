@@ -11,8 +11,8 @@ public class ThermometerUI : MonoBehaviour
     public RectTransform pointerRect;
 
     [Header("Temperature Range")]
-    public float minTemp = -20f;
-    public float maxTemp = 40f;
+    public float minTemp = -10f;
+    public float maxTemp = 20f;
 
     [Range(-50, 60)]
     public float currentTemp = 10f;

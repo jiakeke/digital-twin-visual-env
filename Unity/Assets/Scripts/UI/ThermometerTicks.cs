@@ -8,8 +8,8 @@ public class ThermometerTicks : MonoBehaviour
     public RectTransform tubeRect;
 
     public int step = 10;
-    public int minLabel = -20;
-    public int maxLabel = 40;
+    public int minLabel = -10;
+    public int maxLabel = 20;
 
     public TMP_Text labelPrefab;
     public float xOffset = -10f;
