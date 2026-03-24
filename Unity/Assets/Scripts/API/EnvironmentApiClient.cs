@@ -53,14 +53,10 @@ public class EnvironmentApiClient : MonoBehaviour
     //Obtain dynamic historical temperature
     public IEnumerator GetTemperatureHistory(System.Action<HistoryDataResponse> onSuccess)
     {
-        //string from = "2026-03-17T00:00:00Z";
-        //string to = "2026-03-20T23:59:59Z";
-        //string from = System.DateTime.UtcNow.AddDays(-7).ToString("yyyy-MM-ddTHH:mm:ssZ");
-        //string to = System.DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
+       
         string from = System.DateTime.UtcNow.AddDays(-7).ToString("o");
         string to = System.DateTime.UtcNow.ToString("o");
 
-        //string url = $"{historyUrl}?source=fmi&metric=temperature&from={from}&to={to}";
         string url = $"{historyUrl}?source=fmi&metric=temperature" +
                  $"&from={UnityWebRequest.EscapeURL(from)}" +
                  $"&to={UnityWebRequest.EscapeURL(to)}";
@@ -81,6 +77,66 @@ public class EnvironmentApiClient : MonoBehaviour
             string json = request.downloadHandler.text;
 
             Debug.Log("History response: " + json);
+
+            HistoryDataResponse response = JsonUtility.FromJson<HistoryDataResponse>(json);
+            onSuccess?.Invoke(response);
+        }
+    }
+    //Obtain dynamic historical wind speed
+    public IEnumerator GetWindSpeedHistory(System.Action<HistoryDataResponse> onSuccess)
+    {
+        string from = System.DateTime.UtcNow.AddDays(-7).ToString("o");
+        string to = System.DateTime.UtcNow.ToString("o");
+
+        string url = $"{historyUrl}?source=fmi&metric=wind_speed" +
+                     $"&from={UnityWebRequest.EscapeURL(from)}" +
+                     $"&to={UnityWebRequest.EscapeURL(to)}";
+
+        Debug.Log("Wind speed history request URL: " + url);
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Wind speed history request failed: " + request.error);
+                onSuccess?.Invoke(null);
+                yield break;
+            }
+
+            string json = request.downloadHandler.text;
+            Debug.Log("Wind speed history response: " + json);
+
+            HistoryDataResponse response = JsonUtility.FromJson<HistoryDataResponse>(json);
+            onSuccess?.Invoke(response);
+        }
+    }
+    //Obtain dynamic historical wind direction
+    public IEnumerator GetWindDirectionHistory(System.Action<HistoryDataResponse> onSuccess)
+    {
+        string from = System.DateTime.UtcNow.AddDays(-7).ToString("o");
+        string to = System.DateTime.UtcNow.ToString("o");
+
+        string url = $"{historyUrl}?source=fmi&metric=wind_direction" +
+                     $"&from={UnityWebRequest.EscapeURL(from)}" +
+                     $"&to={UnityWebRequest.EscapeURL(to)}";
+
+        Debug.Log("Wind direction history request URL: " + url);
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Wind direction history request failed: " + request.error);
+                onSuccess?.Invoke(null);
+                yield break;
+            }
+
+            string json = request.downloadHandler.text;
+            Debug.Log("Wind direction history response: " + json);
 
             HistoryDataResponse response = JsonUtility.FromJson<HistoryDataResponse>(json);
             onSuccess?.Invoke(response);

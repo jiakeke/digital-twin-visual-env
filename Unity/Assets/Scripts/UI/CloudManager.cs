@@ -7,7 +7,7 @@ public class CloudManager : MonoBehaviour
     public GameObject cloudPrefab;
     public int cloudCount = 12;
     public float cloudHeight = 220f;
-    public Vector2 areaSize = new Vector2(800f, 800f);
+    public Vector2 areaSize = new Vector2(800f, 300f);
 
     [Header("Wind")]
     public float windSpeedMetersPerSecond = 5f;
@@ -15,17 +15,50 @@ public class CloudManager : MonoBehaviour
     public bool directionIsFrom = true;
 
     [Header("Motion Tuning")]
-    public float speedMultiplier = 8f;
+    public float speedMultiplier = 15f;
+    public float windSmoothSpeed = 3f;
+    public float directionSmoothSpeed = 180f;
+
+    private float targetWindSpeedMetersPerSecond;
+    private float targetWindDirectionDegrees;
+    private bool targetDirectionIsFrom = true;
 
     private readonly List<Transform> _clouds = new();
+    private readonly List<Vector3> _initialLocalPositions = new();
+
+    private bool cloudsVisible = false;
 
     void Start()
     {
+        targetWindSpeedMetersPerSecond = windSpeedMetersPerSecond;
+        targetWindDirectionDegrees = windDirectionDegrees;
+        targetDirectionIsFrom = directionIsFrom;
+
         SpawnClouds();
+        HideClouds();
+        
     }
 
     void Update()
     {
+        if (!cloudsVisible) return;
+
+        // Smooth current wind speed toward target
+        windSpeedMetersPerSecond = Mathf.Lerp(
+            windSpeedMetersPerSecond,
+            targetWindSpeedMetersPerSecond,
+            Time.deltaTime * windSmoothSpeed
+        );
+
+        // Smooth current wind direction toward target
+        windDirectionDegrees = Mathf.MoveTowardsAngle(
+            windDirectionDegrees,
+            targetWindDirectionDegrees,
+            directionSmoothSpeed * Time.deltaTime
+        );
+
+        directionIsFrom = targetDirectionIsFrom;
+
         Vector3 windDir = WindDirectionToWorld(windDirectionDegrees, directionIsFrom);
         float speed = Mathf.Max(0f, windSpeedMetersPerSecond) * speedMultiplier;
 
@@ -39,11 +72,34 @@ public class CloudManager : MonoBehaviour
         }
     }
 
+    public void ShowClouds()
+    {
+        cloudsVisible = true;
+        ResetCloudPositions();
+
+        for (int i = 0; i < _clouds.Count; i++)
+        {
+            if (_clouds[i] != null)
+                _clouds[i].gameObject.SetActive(true);
+        }
+    }
+
+    public void HideClouds()
+    {
+        cloudsVisible = false;
+
+        for (int i = 0; i < _clouds.Count; i++)
+        {
+            if (_clouds[i] != null)
+                _clouds[i].gameObject.SetActive(false);
+        }
+    }
+
     public void SetWind(float speedMps, float directionDeg, bool isFromDirection = true)
     {
-        windSpeedMetersPerSecond = speedMps;
-        windDirectionDegrees = directionDeg;
-        directionIsFrom = isFromDirection;
+        targetWindSpeedMetersPerSecond = speedMps;
+        targetWindDirectionDegrees = directionDeg;
+        targetDirectionIsFrom = isFromDirection;
     }
 
     void SpawnClouds()
@@ -51,6 +107,8 @@ public class CloudManager : MonoBehaviour
         if (cloudPrefab == null) return;
 
         _clouds.Clear();
+        _initialLocalPositions.Clear();
+
         for (int i = 0; i < cloudCount; i++)
         {
             Vector3 pos = new Vector3(
@@ -67,6 +125,19 @@ public class CloudManager : MonoBehaviour
             go.transform.localScale *= s;
 
             _clouds.Add(go.transform);
+            _initialLocalPositions.Add(pos);
+        }
+    }
+    public void ResetCloudPositions()
+    {
+        int count = Mathf.Min(_clouds.Count, _initialLocalPositions.Count);
+
+        for (int i = 0; i < count; i++)
+        {
+            if (_clouds[i] != null)
+            {
+                _clouds[i].localPosition = _initialLocalPositions[i];
+            }
         }
     }
 
@@ -86,6 +157,7 @@ public class CloudManager : MonoBehaviour
         t.localPosition = p;
     }
 
+
     // Converts meteorological degrees to Unity world direction on XZ plane.
     // Meteo degrees: 0=N, 90=E, 180=S, 270=W.
     // "FROM" means wind comes from that direction; cloud moves "TO" opposite direction.
@@ -99,4 +171,5 @@ public class CloudManager : MonoBehaviour
         Vector3 toDir = -fromDir;
         return (isFrom ? toDir : fromDir);
     }
+
 }

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class HistoryPanelController : MonoBehaviour
+public class TemperatureHistoryPanelController : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField] private Slider historySlider;
