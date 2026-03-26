@@ -1091,9 +1091,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CloudManager
   cloudPrefab: {fileID: 6151851245006924556, guid: 4c8a2fc068a9d324c9c016c21866c0ab, type: 3}
-  cloudCount: 25
+  cloudCount: 15
   cloudHeight: 260
-  areaSize: {x: 800, y: 300}
+  areaSize: {x: 1000, y: 300}
   windSpeedMetersPerSecond: 5
   windDirectionDegrees: 270
   directionIsFrom: 1
