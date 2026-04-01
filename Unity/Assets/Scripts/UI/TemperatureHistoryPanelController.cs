@@ -1,7 +1,9 @@
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using System;
+using System.Collections;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class TemperatureHistoryPanelController : MonoBehaviour
 {
@@ -9,6 +11,9 @@ public class TemperatureHistoryPanelController : MonoBehaviour
     [SerializeField] private Slider historySlider;
     [SerializeField] private TMP_Text historyTimeText;
     [SerializeField] private ThermometerUI historyThermometer;
+    private bool isPlaying = false;
+    [SerializeField] private float playSpeed = 0.2f; // second
+    [SerializeField] private int step = 10;
 
     private LatestDataReading[] historyReadings;
 
@@ -63,4 +68,54 @@ public class TemperatureHistoryPanelController : MonoBehaviour
             historyTimeText.text = "Time: " + $"{timeStr} ({timezone})";
         }
     }
+
+    //Auto play silder
+    private Coroutine autoPlayCoroutine;
+    public void ToggleAutoPlay()
+    {
+        
+        if (historyReadings == null || historyReadings.Length == 0) return;
+
+        // stop old autoplay
+        if (autoPlayCoroutine != null)
+        {
+            StopCoroutine(autoPlayCoroutine);
+            autoPlayCoroutine = null;
+        }
+
+        historySlider.value = 0;
+        isPlaying = true;
+        autoPlayCoroutine = StartCoroutine(AutoPlayHistory());
+    }
+    private IEnumerator AutoPlayHistory()
+    {
+        while (isPlaying)
+        {
+            if (historyReadings == null || historyReadings.Length == 0)
+            {
+                autoPlayCoroutine = null;
+                yield break;
+            }       
+
+            int currentIndex = Mathf.RoundToInt(historySlider.value);
+            currentIndex += step;
+
+            if (currentIndex >= historyReadings.Length)
+            {
+                currentIndex = historyReadings.Length - 1;
+                historySlider.value = currentIndex;
+                isPlaying = false;
+                autoPlayCoroutine = null;
+                yield break;
+
+            }
+
+            historySlider.value = currentIndex;
+
+            yield return new WaitForSeconds(playSpeed);
+        }
+
+        autoPlayCoroutine = null;
+    }
+
 }
