@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections;
 
 public class WindHistoryPanelController : MonoBehaviour
 {
@@ -11,6 +12,12 @@ public class WindHistoryPanelController : MonoBehaviour
     [SerializeField] private TMP_Text historyWindDirectionText;
     [SerializeField] private TMP_Text historyWindSpeedText;
     [SerializeField] private CloudManager cloudManager;
+
+    private bool isPlaying = false;
+    private Coroutine autoPlayCoroutine;
+
+    [SerializeField] private float playSpeed = 0.1f;
+    [SerializeField] private int step = 5;
 
     private WindHistoryPoint[] historyPoints;
 
@@ -83,5 +90,56 @@ public class WindHistoryPanelController : MonoBehaviour
                 historyTimeText.text = "Time: " + point.measuredAt;
             }
         }
+    }
+
+    public void ToggleAutoPlay()
+    {
+        if (historyPoints == null || historyPoints.Length == 0) return;
+
+        if (autoPlayCoroutine != null)
+        {
+            StopCoroutine(autoPlayCoroutine);
+            autoPlayCoroutine = null;
+        }
+
+        if (cloudManager != null)
+        {
+            cloudManager.ShowClouds();
+            cloudManager.ResetCloudPositions();
+        }
+
+        historySlider.value = 0;
+        isPlaying = true;
+        autoPlayCoroutine = StartCoroutine(AutoPlayHistory());
+    }
+
+    private IEnumerator AutoPlayHistory()
+    {
+        while (isPlaying)
+        {
+            if (historyPoints == null || historyPoints.Length == 0)
+            {
+                autoPlayCoroutine = null;
+                yield break;
+            }
+
+            int currentIndex = Mathf.RoundToInt(historySlider.value);
+            currentIndex += step;
+
+            if (currentIndex >= historyPoints.Length)
+            {
+                currentIndex = historyPoints.Length - 1;
+                historySlider.value = currentIndex;
+                isPlaying = false;
+                autoPlayCoroutine = null;
+                yield break;
+            }
+
+            historySlider.value = currentIndex;
+
+            yield return new WaitForSeconds(playSpeed);
+        }
+
+        autoPlayCoroutine = null;
     }
 }
