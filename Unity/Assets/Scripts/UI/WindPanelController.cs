@@ -18,13 +18,11 @@ public class WindPanelController : MonoBehaviour
         {
             HideAllContent();
 
-            // opne panel > shows clouds
             if (cloudManager != null)
                 cloudManager.ShowClouds();
         }
         else
         {
-            // close panel ¡ú hides clouds
             if (cloudManager != null)
                 cloudManager.HideClouds();
         }
