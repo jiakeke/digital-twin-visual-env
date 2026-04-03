@@ -5,6 +5,7 @@ public class WindPanelController : MonoBehaviour
     [SerializeField] private GameObject windPanel;
     [SerializeField] private GameObject latestContent;
     [SerializeField] private GameObject historyContent;
+    [SerializeField] private CloudManager cloudManager;
 
     public void ToggleWindPanel()
     {
@@ -16,6 +17,16 @@ public class WindPanelController : MonoBehaviour
         if (newState)
         {
             HideAllContent();
+
+            // opne panel > shows clouds
+            if (cloudManager != null)
+                cloudManager.ShowClouds();
+        }
+        else
+        {
+            // close panel ¡ú hides clouds
+            if (cloudManager != null)
+                cloudManager.HideClouds();
         }
     }
 
