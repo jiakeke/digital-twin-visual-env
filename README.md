@@ -199,11 +199,21 @@ Returns the status of all configured data sources.
 | `wind_speed` | m/s | FMI, Team B |
 | `wind_direction` | ° | FMI, Team B |
 | `pressure` | hPa | FMI |
-| `precipitation` | mm/h | FMI |
+| `precipitation` | mm/h (FMI) / mm per 1h (Team B) | FMI, Team B |
 | `aqi` | index | HSY |
 | `illuminance` | lux | Team B |
-| `precipitation` | mm (past 1h) | Team B |
-| `pm25` | TBD | Team B (planned) |
+| `pm25` | TBD | Team B (planned, unit pending confirmation) |
+
+#### Team B Data Source — Status Notes
+
+Team B operates a LoRaWAN weather station at Metropolia campus via Digita network, storing data in InfluxDB 2.x. Our collector reads from the `MINNO_wx_2` bucket every 10 minutes.
+
+| Item | Detail |
+|---|---|
+| Update interval | 10 min (limited by Digita 144 messages/day quota) |
+| Sensor status | Offline since 2026-03-31 |
+| InfluxDB retention | 3 days — historical data beyond that must be read from our PostgreSQL |
+| PM2.5 | Sensor under development, field name and unit TBD |
 
 #### Air Quality Index (AQI) — Finnish Standard
 
