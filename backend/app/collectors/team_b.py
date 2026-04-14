@@ -1,19 +1,37 @@
-import random
 from datetime import datetime, timezone
+
+from influxdb_client.client.influxdb_client_async import InfluxDBClientAsync
 
 from app.collectors.base import BaseCollector
 from app.config import settings
 from app.models.schemas import NormalizedReading
 
-# Plausible ranges for Helsinki sensor readings (mock data)
-_MOCK_METRICS = [
-    ("temperature", -5.0, 25.0, "°C"),
-    ("humidity", 40.0, 95.0, "%"),
-    ("pm25", 1.0, 35.0, "µg/m³"),
-]
+# Metropolia Myllypuro campus — where the MINNO weather station is deployed
+_SENSOR_LOCATION = {
+    "location_id": "team_b_minnowxsta",
+    "latitude": 60.2230,
+    "longitude": 25.0780,
+}
 
-# Approximate Helsinki city center coordinates
-_MOCK_LOCATION = {"location_id": "team_b_mock_01", "latitude": 60.1699, "longitude": 24.9384}
+# Map InfluxDB field name → (our metric name, unit)
+# Fields confirmed by Team B. 'dr' (LoRaWAN data rate), 'payload_int', 'payload_raw' are excluded.
+# PM2.5 field TBD — will be added when Team B confirms field name and unit.
+_FIELD_MAP = {
+    "temperature":    ("temperature",   "°C"),
+    "humidity":       ("humidity",      "%"),
+    "lux":            ("illuminance",   "lux"),
+    "wind_direction": ("wind_direction","°"),
+    "wind_speed":     ("wind_speed",    "m/s"),
+    "rain_1h":        ("precipitation", "mm"),
+}
+
+_FLUX_QUERY = """
+from(bucket: "{bucket}")
+  |> range(start: -15m)
+  |> filter(fn: (r) => r._measurement == "mqtt_consumer")
+  |> filter(fn: (r) => contains(value: r._field, set: {fields}))
+  |> last()
+"""
 
 
 class TeamBCollector(BaseCollector):
@@ -21,31 +39,50 @@ class TeamBCollector(BaseCollector):
     enabled = settings.team_b_enabled
 
     async def fetch(self) -> dict:
-        # Mock: return synthetic data; replace with real Team B interface when available.
-        return {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "readings": [
-                {
-                    "metric": metric,
-                    "value": round(random.uniform(lo, hi), 2),
-                    "unit": unit,
-                }
-                for metric, lo, hi, unit in _MOCK_METRICS
-            ],
-        }
+        fields_flux = "[" + ", ".join(f'"{f}"' for f in _FIELD_MAP) + "]"
+        query = _FLUX_QUERY.format(
+            bucket=settings.team_b_influx_bucket,
+            fields=fields_flux,
+        )
+        readings = []
+        async with InfluxDBClientAsync(
+            url=settings.team_b_influx_url,
+            token=settings.team_b_influx_token,
+            org=settings.team_b_influx_org,
+        ) as client:
+            query_api = client.query_api()
+            tables = await query_api.query(query)
+            for table in tables:
+                for record in table.records:
+                    field = record.get_field()
+                    if field not in _FIELD_MAP:
+                        continue
+                    readings.append({
+                        "field": field,
+                        "value": record.get_value(),
+                        "time": record.get_time(),
+                    })
+        return {"readings": readings}
 
     def normalize(self, raw: dict) -> list[NormalizedReading]:
-        measured_at = datetime.fromisoformat(raw["timestamp"])
-        return [
-            NormalizedReading(
-                source=self.source_name,
-                location_id=_MOCK_LOCATION["location_id"],
-                latitude=_MOCK_LOCATION["latitude"],
-                longitude=_MOCK_LOCATION["longitude"],
-                measured_at=measured_at,
-                metric=r["metric"],
-                value=r["value"],
-                unit=r["unit"],
+        results = []
+        for r in raw["readings"]:
+            metric, unit = _FIELD_MAP[r["field"]]
+            ts = r["time"]
+            if isinstance(ts, datetime):
+                measured_at = ts.astimezone(timezone.utc).replace(tzinfo=timezone.utc)
+            else:
+                measured_at = datetime.now(timezone.utc)
+            results.append(
+                NormalizedReading(
+                    source=self.source_name,
+                    location_id=_SENSOR_LOCATION["location_id"],
+                    latitude=_SENSOR_LOCATION["latitude"],
+                    longitude=_SENSOR_LOCATION["longitude"],
+                    measured_at=measured_at,
+                    metric=metric,
+                    value=float(r["value"]),
+                    unit=unit,
+                )
             )
-            for r in raw["readings"]
-        ]
+        return results

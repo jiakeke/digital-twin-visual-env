@@ -47,16 +47,16 @@ Unity Frontend (Digital Twin)
                     │ APScheduler
         ┌───────────┼───────────┐
         ▼           ▼           ▼
-   FMI Collector  HSY Collector  Team B (mock)
+   FMI Collector  HSY Collector  Team B (LoRaWAN)
 ```
 
 ### Data Sources
 
 | Source | Data | Update interval |
 |--------|------|----------------|
-| [FMI](https://en.ilmatieteenlaitos.fi/open-data) | Temperature, wind, humidity, pressure, precipitation | Every 10 min |
+| [FMI](https://en.ilmatieteenlaitos.fi/open-data) | Temperature, wind speed/direction, humidity, pressure, precipitation | Every 10 min |
 | [HSY](https://www.hsy.fi/en/air-quality-and-climate/air-quality/air-quality-in-the-hsy-region/) | Air Quality Index (AQI) | Every 60 min |
-| Team B (mock) | Custom IoT sensor data | TBD |
+| Team B (LoRaWAN) | Temperature, humidity, light, wind speed/direction, precipitation | Every 10 min |
 
 ### Tech Stack
 
@@ -183,13 +183,16 @@ Returns the status of all configured data sources.
 
 | Metric | Unit | Source |
 |--------|------|--------|
-| `temperature` | °C | FMI |
-| `humidity` | % | FMI |
-| `wind_speed` | m/s | FMI |
-| `wind_direction` | ° | FMI |
+| `temperature` | °C | FMI, Team B |
+| `humidity` | % | FMI, Team B |
+| `wind_speed` | m/s | FMI, Team B |
+| `wind_direction` | ° | FMI, Team B |
 | `pressure` | hPa | FMI |
 | `precipitation` | mm/h | FMI |
 | `aqi` | index | HSY |
+| `illuminance` | lux | Team B |
+| `precipitation` | mm (past 1h) | Team B |
+| `pm25` | TBD | Team B (planned) |
 
 #### Air Quality Index (AQI) — Finnish Standard
 
