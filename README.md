@@ -105,6 +105,17 @@ This starts three containers:
 | http://localhost:8001/api/v1/environment/latest | Latest readings (all sources) |
 | http://localhost:8001/docs | Interactive API documentation |
 
+### Live deployment
+
+The backend is also deployed on EC2 and updates automatically on every push to `main`:
+
+| URL | Description |
+|-----|-------------|
+| http://twin.jias.name:8001/api/v1/health | Health check |
+| http://twin.jias.name:8001/api/v1/sources | Data source status |
+| http://twin.jias.name:8001/api/v1/environment/latest | Latest readings |
+| http://twin.jias.name:8001/docs | Interactive API documentation |
+
 ---
 
 ## API Reference
@@ -223,6 +234,13 @@ TEAM_B_ENABLED=false
 # Polling intervals
 FMI_POLL_INTERVAL_MINUTES=10
 HSY_POLL_INTERVAL_MINUTES=60
+TEAM_B_POLL_INTERVAL_MINUTES=10
+
+# Team B — InfluxDB 2.x (Raspberry Pi at Metropolia)
+TEAM_B_INFLUX_URL=http://minnogp10project.asuscomm.com:8086
+TEAM_B_INFLUX_TOKEN=<token>
+TEAM_B_INFLUX_ORG=<org_id>
+TEAM_B_INFLUX_BUCKET=MINNO_wx_2
 
 # Database & cache
 POSTGRES_URL=postgresql+asyncpg://user:password@postgres:5432/envdata
