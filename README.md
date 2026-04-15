@@ -47,16 +47,16 @@ Unity Frontend (Digital Twin)
                     │ APScheduler
         ┌───────────┼───────────┐
         ▼           ▼           ▼
-   FMI Collector  HSY Collector  Team B (mock)
+   FMI Collector  HSY Collector  Team B (LoRaWAN)
 ```
 
 ### Data Sources
 
 | Source | Data | Update interval |
 |--------|------|----------------|
-| [FMI](https://en.ilmatieteenlaitos.fi/open-data) | Temperature, wind, humidity, pressure, precipitation | Every 10 min |
+| [FMI](https://en.ilmatieteenlaitos.fi/open-data) | Temperature, wind speed/direction, humidity, pressure, precipitation | Every 10 min |
 | [HSY](https://www.hsy.fi/en/air-quality-and-climate/air-quality/air-quality-in-the-hsy-region/) | Air Quality Index (AQI) | Every 60 min |
-| Team B (mock) | Custom IoT sensor data | TBD |
+| Team B (LoRaWAN) | Temperature, humidity, light, wind speed/direction, precipitation | Every 10 min |
 
 ### Tech Stack
 
@@ -104,6 +104,17 @@ This starts three containers:
 | http://localhost:8001/api/v1/sources | Data source status |
 | http://localhost:8001/api/v1/environment/latest | Latest readings (all sources) |
 | http://localhost:8001/docs | Interactive API documentation |
+
+### Live deployment
+
+The backend is also deployed on EC2 and updates automatically on every push to `main`:
+
+| URL | Description |
+|-----|-------------|
+| http://twin.jias.name:8001/api/v1/health | Health check |
+| http://twin.jias.name:8001/api/v1/sources | Data source status |
+| http://twin.jias.name:8001/api/v1/environment/latest | Latest readings |
+| http://twin.jias.name:8001/docs | Interactive API documentation |
 
 ---
 
@@ -183,13 +194,26 @@ Returns the status of all configured data sources.
 
 | Metric | Unit | Source |
 |--------|------|--------|
-| `temperature` | °C | FMI |
-| `humidity` | % | FMI |
-| `wind_speed` | m/s | FMI |
-| `wind_direction` | ° | FMI |
+| `temperature` | °C | FMI, Team B |
+| `humidity` | % | FMI, Team B |
+| `wind_speed` | m/s | FMI, Team B |
+| `wind_direction` | ° | FMI, Team B |
 | `pressure` | hPa | FMI |
-| `precipitation` | mm/h | FMI |
+| `precipitation` | mm/h (FMI) / mm per 1h (Team B) | FMI, Team B |
 | `aqi` | index | HSY |
+| `illuminance` | lux | Team B |
+| `pm25` | TBD | Team B (planned, unit pending confirmation) |
+
+#### Team B Data Source — Status Notes
+
+Team B operates a LoRaWAN weather station at Metropolia campus via Digita network, storing data in InfluxDB 2.x. Our collector reads from the `MINNO_wx_2` bucket every 10 minutes.
+
+| Item | Detail |
+|---|---|
+| Update interval | 10 min (limited by Digita 144 messages/day quota) |
+| Sensor status | Offline since 2026-03-31 |
+| InfluxDB retention | 3 days — historical data beyond that must be read from our PostgreSQL |
+| PM2.5 | Sensor under development, field name and unit TBD |
 
 #### Air Quality Index (AQI) — Finnish Standard
 
@@ -220,6 +244,13 @@ TEAM_B_ENABLED=false
 # Polling intervals
 FMI_POLL_INTERVAL_MINUTES=10
 HSY_POLL_INTERVAL_MINUTES=60
+TEAM_B_POLL_INTERVAL_MINUTES=10
+
+# Team B — InfluxDB 2.x (Raspberry Pi at Metropolia)
+TEAM_B_INFLUX_URL=http://minnogp10project.asuscomm.com:8086
+TEAM_B_INFLUX_TOKEN=<token>
+TEAM_B_INFLUX_ORG=<org_id>
+TEAM_B_INFLUX_BUCKET=MINNO_wx_2
 
 # Database & cache
 POSTGRES_URL=postgresql+asyncpg://user:password@postgres:5432/envdata

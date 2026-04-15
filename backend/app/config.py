@@ -16,8 +16,12 @@ class Settings(BaseSettings):
     hsy_wfs_url: str = "https://kartta.hsy.fi/geoserver/ilmanlaatu/wfs"
     hsy_poll_interval_minutes: int = 60
 
-    # Team B (TBD)
-    team_b_db_url: str = ""
+    # Team B — InfluxDB 2.x
+    team_b_influx_url: str = ""
+    team_b_influx_token: str = ""
+    team_b_influx_org: str = ""
+    team_b_influx_bucket: str = "MINNO_wx_2"
+    team_b_poll_interval_minutes: int = 10
 
     # Database
     postgres_url: str = "postgresql+asyncpg://user:password@postgres:5432/envdata"

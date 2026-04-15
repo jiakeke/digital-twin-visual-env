@@ -85,7 +85,7 @@ def start_scheduler() -> None:
         scheduler.add_job(
             _run_collector,
             "interval",
-            minutes=5,
+            minutes=settings.team_b_poll_interval_minutes,
             args=[TeamBCollector()],
             id="team_b",
             next_run_time=datetime.now(timezone.utc),
