@@ -14,12 +14,10 @@ public class WindPanelController : MonoBehaviour
         bool newState = !windPanel.activeSelf;
         windPanel.SetActive(newState);
 
+
         if (newState)
         {
             HideAllContent();
-
-            if (cloudManager != null)
-                cloudManager.ShowClouds();
         }
         else
         {

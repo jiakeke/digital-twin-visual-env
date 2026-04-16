@@ -49,7 +49,9 @@ public class EnvironmentManager : MonoBehaviour
     // Wind latest
     public void OnWindLatestButtonClicked()
     {
-   
+        if (cloudManager != null)
+            cloudManager.ShowClouds();
+
         StartCoroutine(LoadLatestEnvironment());
     }
 
@@ -61,7 +63,9 @@ public class EnvironmentManager : MonoBehaviour
     // Wind history 
     public void OnWindHistoryButtonClicked()
     {
-        
+        if (cloudManager != null)
+            cloudManager.ShowClouds();
+
         StartCoroutine(LoadWindHistory());
     }
     private IEnumerator LoadWindHistory()
