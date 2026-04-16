@@ -59,7 +59,8 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
 
             echo "==> Pull latest code"
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
 
             echo "==> Rebuild & restart containers"
             docker compose up --build -d
