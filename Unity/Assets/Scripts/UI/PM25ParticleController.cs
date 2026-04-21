@@ -5,20 +5,26 @@ using UnityEngine;
 public class PM25ParticleController : MonoBehaviour
 {
     [Header("PM2.5 (ug/m3)")]
-    [Range(0, 200)]
+    [Range(0, 120)]
     public float pm25 = 10f;
+
+    public bool useAQI = false;
+
+    [Header("AQI Range")]
+    public float aqiMin = 0f;
+    public float aqiMax = 120f;
 
     [Header("Mapping")]
     public float pmMin = 0f;
-    public float pmMax = 150f;
+    public float pmMax = 120f;
 
     [Header("Emission")]
     public float rateMin = 0f;
     public float rateMax = 800f;
 
     [Header("Appearance")]
-    public float sizeMin = 0.004f;
-    public float sizeMax = 0.02f;
+    public float sizeMin = 0.05f;
+    public float sizeMax = 0.1f;
 
     [Range(0f, 1f)]
     public float alphaMin = 0.02f;
@@ -81,5 +87,15 @@ public class PM25ParticleController : MonoBehaviour
         _main.startColor = c;
 
         _ps.Play(true);
+    }
+
+
+    public void SetAQI(float aqi)
+    {
+        useAQI = true;
+        pm25 = aqi;          // reuse the same pipeline
+        pmMin = aqiMin;
+        pmMax = aqiMax;
+        Apply();
     }
 }
