@@ -3,16 +3,21 @@ using UnityEngine;
 
 public class EnvironmentManager : MonoBehaviour
 {
+
     [Header("References")]
     [SerializeField] private EnvironmentApiClient apiClient;
+    [Header("Temperature")]
     [SerializeField] private ThermometerUI thermometer;
     [SerializeField] private TemperatureHistoryPanelController tempHistoryController;
+    [Header("Wind")]
     [SerializeField] private CloudManager cloudManager;
     [SerializeField] private WindUI windUI;
     [SerializeField] private WindHistoryPanelController windHistoryController;
-
     private HistoryDataResponse pendingWindSpeedHistory;
     private HistoryDataResponse pendingWindDirectionHistory;
+    [Header("AQI")]
+    [SerializeField] private AQIBarUI aqiLatestBar;
+    [SerializeField] private AQIHistoryPanelController aqiHistoryController;
 
     //press "play" run health api
     private void Start()
@@ -44,6 +49,17 @@ public class EnvironmentManager : MonoBehaviour
     private IEnumerator LoadTemperatureHistory()
     {
         yield return StartCoroutine(apiClient.GetTemperatureHistory(OnHistoryReceived));
+    }
+
+    //run AQI latest api
+    public void OnAQILatestButtonClicked()
+    {
+        StartCoroutine(LoadLatestAQI());
+    }
+
+    private IEnumerator LoadLatestAQI()
+    {
+        yield return StartCoroutine(apiClient.GetLatestEnvironment(OnLatestEnvironmentReceived));
     }
 
     // Wind latest
@@ -133,6 +149,17 @@ public class EnvironmentManager : MonoBehaviour
         Debug.Log($"Wind history points built: {count}");
     }
 
+    //run AQI history api
+    public void OnAQIHistoryButtonClicked()
+    {
+        StartCoroutine(LoadAQIHistory());
+    }
+
+    private IEnumerator LoadAQIHistory()
+    {
+        yield return StartCoroutine(apiClient.GetAQIHistory(OnAQIHistoryReceived));
+    }
+
     //received latest data
     private void OnLatestEnvironmentReceived(LatestDataResponse response)
     {
@@ -148,6 +175,9 @@ public class EnvironmentManager : MonoBehaviour
         float? latestWindSpeed = null;
         float? latestWindDirection = null;
         string latestWindTime = null;
+
+        float? latestAQI = null;
+        string latestAQITime = null;
 
         foreach (LatestDataReading reading in response.readings)
         {
@@ -167,6 +197,12 @@ public class EnvironmentManager : MonoBehaviour
             {
                 latestWindDirection = reading.value;
                 latestWindTime = reading.measured_at;
+            }
+            else if (reading.metric == "aqi" && reading.location_id == "hsy_4")
+            {
+                latestAQI = reading.value;
+                latestAQITime = reading.measured_at;
+                Debug.Log($"AQI latest location = {reading.location_id}, time = {latestAQITime}, value = {latestAQI}");
             }
         }
 
@@ -210,6 +246,22 @@ public class EnvironmentManager : MonoBehaviour
         {
             Debug.LogWarning("Wind speed or wind direction not found.");
         }
+
+        // update AQI UI
+        if (latestAQI.HasValue)
+        {
+            Debug.Log("AQI found: " + latestAQI.Value);
+
+            if (aqiLatestBar != null)
+            {
+                aqiLatestBar.SetAQI(latestAQI.Value);
+                aqiLatestBar.SetTime(latestAQITime);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No latest AQI found.");
+        }
     }
 
     // received historical ddata
@@ -224,6 +276,23 @@ public class EnvironmentManager : MonoBehaviour
         if (tempHistoryController != null)
         {
             tempHistoryController.SetHistoryData(response.readings);
+        }
+    }
+
+    //received AQI hitorical data 
+    private void OnAQIHistoryReceived(HistoryDataResponse response)
+    {
+        Debug.Log("OnAQIHistoryReceived called");
+
+        if (response == null || response.readings == null || response.readings.Length == 0)
+        {
+            Debug.LogWarning("No AQI history data received.");
+            return;
+        }
+
+        if (aqiHistoryController != null)
+        {
+            aqiHistoryController.SetHistoryData(response.readings);
         }
     }
 }

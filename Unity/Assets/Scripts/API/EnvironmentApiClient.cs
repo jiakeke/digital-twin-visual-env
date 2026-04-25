@@ -142,4 +142,36 @@ public class EnvironmentApiClient : MonoBehaviour
             onSuccess?.Invoke(response);
         }
     }
+
+    //obtain historical AQI data
+    public IEnumerator GetAQIHistory(System.Action<HistoryDataResponse> onSuccess)
+    {
+        string from = System.DateTime.UtcNow.AddDays(-7).ToString("o");
+        string to = System.DateTime.UtcNow.AddHours(3).ToString("o");  //extending history query range
+
+        //from "hsy" 
+        string url = $"{historyUrl}?source=hsy&metric=aqi" +
+                     $"&from={UnityWebRequest.EscapeURL(from)}" +
+                     $"&to={UnityWebRequest.EscapeURL(to)}";
+
+        Debug.Log("AQI history request URL: " + url);
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("AQI history request failed: " + request.error);
+                onSuccess?.Invoke(null);
+                yield break;
+            }
+
+            string json = request.downloadHandler.text;
+            Debug.Log("AQI history response: " + json);
+
+            HistoryDataResponse response = JsonUtility.FromJson<HistoryDataResponse>(json);
+            onSuccess?.Invoke(response);
+        }
+    }
 }
