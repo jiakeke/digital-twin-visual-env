@@ -85,7 +85,7 @@ public class ThermometerUI : MonoBehaviour
         {
             dt = dt.ToLocalTime(); //Switch to UTC+2
 
-            string timeStr = dt.ToString("HH:mm");
+            string timeStr = dt.ToString("yyyy-MM-dd HH:mm");
             string timezone = TimeZoneInfo.Local.IsDaylightSavingTime(dt) ? "EEST" : "EET";
 
             timeText.text = $"Updated: {timeStr} ({timezone})";

@@ -28,7 +28,7 @@ public class WindUI : MonoBehaviour
             {
                 dt = dt.ToLocalTime();
 
-                string timeStr = dt.ToString("HH:mm");
+                string timeStr = dt.ToString("yyyy-MM-dd HH:mm");
                 string timezone = TimeZoneInfo.Local.IsDaylightSavingTime(dt) ? "EEST" : "EET";
 
                 return $"Updated at: {timeStr} ({timezone})";

@@ -18,6 +18,8 @@ public class EnvironmentManager : MonoBehaviour
     [Header("AQI")]
     [SerializeField] private AQIBarUI aqiLatestBar;
     [SerializeField] private AQIHistoryPanelController aqiHistoryController;
+    [Header("Humidity")]
+    [SerializeField] private HumidityDropUI humidityUI;
 
     //press "play" run health api
     private void Start()
@@ -58,6 +60,17 @@ public class EnvironmentManager : MonoBehaviour
     }
 
     private IEnumerator LoadLatestAQI()
+    {
+        yield return StartCoroutine(apiClient.GetLatestEnvironment(OnLatestEnvironmentReceived));
+    }
+
+    //run himidity latest api
+    public void OnHumidityLatestButtonClicked()
+    {
+        StartCoroutine(LoadLatestHumidity());
+    }
+
+    private IEnumerator LoadLatestHumidity()
     {
         yield return StartCoroutine(apiClient.GetLatestEnvironment(OnLatestEnvironmentReceived));
     }
@@ -179,6 +192,9 @@ public class EnvironmentManager : MonoBehaviour
         float? latestAQI = null;
         string latestAQITime = null;
 
+        float? latestHumidity = null;
+        string latestHumidityTime = null;
+
         foreach (LatestDataReading reading in response.readings)
         {
             Debug.Log($"Metric: {reading.metric}, Value: {reading.value}, Unit: {reading.unit}");
@@ -203,6 +219,11 @@ public class EnvironmentManager : MonoBehaviour
                 latestAQI = reading.value;
                 latestAQITime = reading.measured_at;
                 Debug.Log($"AQI latest location = {reading.location_id}, time = {latestAQITime}, value = {latestAQI}");
+            }
+            else if (reading.metric == "humidity")
+            {
+                latestHumidity = reading.value;
+                latestHumidityTime = reading.measured_at;
             }
         }
 
@@ -261,6 +282,22 @@ public class EnvironmentManager : MonoBehaviour
         else
         {
             Debug.LogWarning("No latest AQI found.");
+        }
+
+        //update humidity UI
+        if (latestHumidity.HasValue)
+        {
+            Debug.Log("Humidity found: " + latestHumidity.Value);
+
+            if (humidityUI != null)
+            {
+                humidityUI.SetHumidity(latestHumidity.Value);
+                humidityUI.SetTime(latestHumidityTime);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No latest humidity found.");
         }
     }
 
