@@ -10,7 +10,7 @@ public class TemperatureHistoryPanelController : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Slider historySlider;
     [SerializeField] private TMP_Text historyTimeText;
-    [SerializeField] private ThermometerUI historyThermometer;
+    [SerializeField] private TemperatureLineChartUI lineChartUI;
     private bool isPlaying = false;
     [SerializeField] private float playSpeed = 0.2f; // second
     [SerializeField] private int step = 10;
@@ -26,6 +26,10 @@ public class TemperatureHistoryPanelController : MonoBehaviour
         }
 
         historyReadings = readings;
+        if (lineChartUI != null)
+        {
+            lineChartUI.SetData(historyReadings);
+        }
 
         if (historySlider != null)
         {
@@ -52,13 +56,12 @@ public class TemperatureHistoryPanelController : MonoBehaviour
 
         LatestDataReading reading = historyReadings[index];
 
-        if (historyThermometer != null)
+        if (lineChartUI != null)
         {
-            historyThermometer.SetTemperature(reading.value);
-            historyThermometer.SetTime(reading.measured_at);
+            lineChartUI.SetTemperatureHistoryData(index);
         }
 
-       
+        /*
         if (DateTime.TryParse(reading.measured_at, out DateTime dt))
         {
             dt = dt.ToLocalTime();
@@ -67,6 +70,7 @@ public class TemperatureHistoryPanelController : MonoBehaviour
             string timezone = TimeZoneInfo.Local.IsDaylightSavingTime(dt) ? "EEST" : "EET";
             historyTimeText.text = "Time: " + $"{timeStr} ({timezone})";
         }
+        */
     }
 
     //Auto play silder
