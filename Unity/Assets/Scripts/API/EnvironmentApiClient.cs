@@ -174,4 +174,35 @@ public class EnvironmentApiClient : MonoBehaviour
             onSuccess?.Invoke(response);
         }
     }
+
+    //obtain Himidity historical data
+    public IEnumerator GetHumidityHistory(System.Action<HistoryDataResponse> onSuccess)
+    {
+        string from = System.DateTime.UtcNow.AddDays(-7).ToString("o");
+        string to = System.DateTime.UtcNow.ToString("o");
+
+        string url = $"{historyUrl}?source=fmi&metric=humidity" +
+                     $"&from={UnityWebRequest.EscapeURL(from)}" +
+                     $"&to={UnityWebRequest.EscapeURL(to)}";
+
+        Debug.Log("Humidity history request URL: " + url);
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Humidity history request failed: " + request.error);
+                onSuccess?.Invoke(null);
+                yield break;
+            }
+
+            string json = request.downloadHandler.text;
+            Debug.Log("Humidity history response: " + json);
+
+            HistoryDataResponse response = JsonUtility.FromJson<HistoryDataResponse>(json);
+            onSuccess?.Invoke(response);
+        }
+    }
 }

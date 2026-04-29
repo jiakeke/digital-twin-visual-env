@@ -20,6 +20,7 @@ public class EnvironmentManager : MonoBehaviour
     [SerializeField] private AQIHistoryPanelController aqiHistoryController;
     [Header("Humidity")]
     [SerializeField] private HumidityDropUI humidityUI;
+    [SerializeField] private HumidityHistoryPanelController humidityHistoryController;
 
     //press "play" run health api
     private void Start()
@@ -171,6 +172,16 @@ public class EnvironmentManager : MonoBehaviour
     private IEnumerator LoadAQIHistory()
     {
         yield return StartCoroutine(apiClient.GetAQIHistory(OnAQIHistoryReceived));
+    }
+    //run humidity history api
+    public void OnHumidityHistoryButtonClicked()
+    {
+        StartCoroutine(LoadHumidityHistory());
+    }
+
+    private IEnumerator LoadHumidityHistory()
+    {
+        yield return StartCoroutine(apiClient.GetHumidityHistory(OnHumidityHistoryReceived));
     }
 
     //received latest data
@@ -330,6 +341,22 @@ public class EnvironmentManager : MonoBehaviour
         if (aqiHistoryController != null)
         {
             aqiHistoryController.SetHistoryData(response.readings);
+        }
+    }
+    //received Humidity historical data
+    private void OnHumidityHistoryReceived(HistoryDataResponse response)
+    {
+        if (response == null || response.readings == null)
+        {
+            Debug.LogWarning("No humidity history response.");
+            return;
+        }
+
+        Debug.Log("Humidity history received: " + response.readings.Length);
+
+        if (humidityHistoryController != null)
+        {
+            humidityHistoryController.SetHistoryData(response.readings);
         }
     }
 }
