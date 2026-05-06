@@ -23,6 +23,7 @@ _FIELD_MAP = {
     "wind_direction": ("wind_direction","°"),
     "wind_speed":     ("wind_speed",    "m/s"),
     "rain_1h":        ("precipitation", "mm"),
+    "pm2_5":          ("pm2_5",         "µg/m³"),
 }
 
 _FLUX_QUERY = """
