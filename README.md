@@ -56,7 +56,7 @@ Unity Frontend (Digital Twin)
 |--------|------|----------------|
 | [FMI](https://en.ilmatieteenlaitos.fi/open-data) | Temperature, wind speed/direction, humidity, pressure, precipitation | Every 10 min |
 | [HSY](https://www.hsy.fi/en/air-quality-and-climate/air-quality/air-quality-in-the-hsy-region/) | Air Quality Index (AQI) | Every 60 min |
-| Team B (LoRaWAN) | Temperature, humidity, light, wind speed/direction, precipitation | Every 10 min |
+| Team B (LoRaWAN) | Temperature, humidity, light, wind speed/direction, precipitation, PM2.5 | Every 10 min |
 
 ### Tech Stack
 
@@ -202,7 +202,7 @@ Returns the status of all configured data sources.
 | `precipitation` | mm/h (FMI) / mm per 1h (Team B) | FMI, Team B |
 | `aqi` | index | HSY |
 | `illuminance` | lux | Team B |
-| `pm25` | TBD | Team B (planned, unit pending confirmation) |
+| `pm2_5` | µg/m³ | Team B |
 
 #### Team B Data Source — Status Notes
 
@@ -211,9 +211,9 @@ Team B operates a LoRaWAN weather station at Metropolia campus via Digita networ
 | Item | Detail |
 |---|---|
 | Update interval | 10 min (limited by Digita 144 messages/day quota) |
-| Sensor status | Offline since 2026-03-31 |
-| InfluxDB retention | 3 days — historical data beyond that must be read from our PostgreSQL |
-| PM2.5 | Sensor under development, field name and unit TBD |
+| Sensor status | Online (resumed May 2026) |
+| InfluxDB retention | ~30 days — historical data beyond that is stored in our PostgreSQL |
+| PM2.5 | Field: `pm2_5`, unit: µg/m³ |
 
 #### Air Quality Index (AQI) — Finnish Standard
 
