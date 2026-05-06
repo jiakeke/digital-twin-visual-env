@@ -2,7 +2,7 @@
 # Digital Twin Environmental Data Visualization — Helsinki
 
 > This document captures all architectural decisions and context from the initial design session.
-> Provide this file to Claude Code at the start of each session for full context.
+> Read this file at the start of each development session for full project context.
 
 ---
 
